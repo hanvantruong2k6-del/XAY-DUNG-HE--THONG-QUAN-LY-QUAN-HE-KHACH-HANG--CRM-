@@ -1,0 +1,8 @@
+SẮP XẾP THEO CẤU TRÚC NÀY/
+├─ README.md             - Thêm mới: giới thiệu, cách cài và chạy
+├─ crm_py/
+│  ├─ app.py             - Phần MAIN
+│  ├─ requirements.txt   - Danh sách các thư viện Python
+│  └─ public/            - Toàn bộ giao diện
+├─ chay_server.bat       - Dùng để chạy server (vô thư mục để chạy)
+├─ bat_tunnel.bat        - Sau khi chay_server.bat thì bật tunnel để nhận link share truy cập
