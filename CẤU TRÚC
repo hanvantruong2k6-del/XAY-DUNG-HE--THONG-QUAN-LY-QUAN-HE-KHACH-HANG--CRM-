@@ -6,3 +6,5 @@ SẮP XẾP THEO CẤU TRÚC NÀY/
 │  └─ public/            - Toàn bộ giao diện
 ├─ chay_server.bat       - Dùng để chạy server (vô thư mục để chạy)
 ├─ bat_tunnel.bat        - Sau khi chay_server.bat thì bật tunnel để nhận link share truy cập
+├─ cloudflared/
+│  ├─ cloudflared.exe    - Truy cập: https://github.com/cloudflare/cloudflared/releases rồi downl bản thư viện phù hợp với máy mik về chuyên vô thu mục cloudflared/ và đổi tên thành " cloudflared.exe "
