@@ -1,1 +1,6 @@
-
+crm.db
+tai_khoan_thanh_vien.md
+cloudflared/
+.vscode/
+__pycache__/
+*.download
