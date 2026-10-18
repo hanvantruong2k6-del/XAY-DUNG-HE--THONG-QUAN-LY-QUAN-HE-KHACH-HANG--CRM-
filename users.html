@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý tài khoản</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="side">
+      <h2>CRM Logistics</h2>
+      <a href="/dashboard.html">Dashboard</a><a href="#">Khách hàng</a><a href="#">Pipeline cơ hội</a>
+      <a href="#">Ticket</a><a href="#">Báo cáo</a><a class="on" href="/users.html">Phân quyền</a>
+    </nav>
+    <div class="main">
+      <div class="top"><h2>Quản lý tài khoản</h2><button id="logout">Đăng xuất</button></div>
+      <div class="panel">
+        <h3>Thêm tài khoản nhân viên</h3>
+        <div class="row">
+          <input id="fullName" placeholder="Họ và tên">
+          <input id="username" placeholder="Tên đăng nhập">
+          <select id="role"><option>Sales</option><option>CSKH</option><option>Quản lý</option><option>Admin</option></select>
+          <button id="add">Tạo tài khoản</button>
+        </div>
+        <div id="msg" class="temp" style="display:none"></div>
+      </div>
+      <div class="panel">
+        <table><thead><tr><th>Họ tên</th><th>Tên đăng nhập</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="rows"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div id="dlg" class="overlay" style="display:none"><div class="box">
+    <h3 id="dlgTitle"></h3><p id="dlgUser"></p>
+    <div class="pwline"><b id="dlgPw"></b></div>
+    <p class="small">Mật khẩu tạm chỉ hiển thị một lần. Hãy sao chép và gửi cho nhân viên. Họ sẽ phải đổi mật khẩu khi đăng nhập lần đầu.</p>
+    <button id="dlgCopy">Sao chép tài khoản</button> <button id="dlgClose" class="ghost">Đóng</button>
+  </div></div>
+  <script>
+    const $ = id => document.getElementById(id), LOGIN = '/SignUp_LogIn_Form.html';
+    async function api(url, method = 'GET', body) {
+      const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+      if (r.status === 401) { location.href = LOGIN; throw 0; }
+      return r.json();
+    }
+    function showCred(title, user, pw) {
+      $('dlgTitle').textContent = title; $('dlgUser').textContent = 'Tên đăng nhập: ' + user; $('dlgPw').textContent = pw;
+      $('dlg').style.display = 'flex';
+      $('dlgCopy').onclick = async () => {
+        const t = 'Tên đăng nhập: ' + user + '\nMật khẩu tạm: ' + pw;
+        try { await navigator.clipboard.writeText(t); $('dlgCopy').textContent = 'Đã sao chép ✓'; }
+        catch { const r = document.createRange(); r.selectNodeContents($('dlgPw')); getSelection().removeAllRanges(); getSelection().addRange(r); $('dlgCopy').textContent = 'Hãy nhấn Ctrl+C'; }
+      };
+      $('dlgClose').onclick = () => { $('dlg').style.display = 'none'; $('dlgCopy').textContent = 'Sao chép tài khoản'; };
+    }
+    function show(text, bad, pw) {
+      const m = $('msg'); m.style.display = 'block'; m.className = 'temp' + (bad ? ' bad' : ''); m.textContent = text;
+      if (pw) { const b = document.createElement('b'); b.textContent = pw; m.append(' Mật khẩu tạm: ', b, ' (chỉ hiển thị một lần, hãy gửi cho nhân viên)'); }
+    }
+    function cell(tr, text) { const td = tr.insertCell(); td.textContent = text; return td; }
+    async function load() {
+      const d = await api('/api/users'); if (!d.ok) return location.href = '/dashboard.html';
+      $('rows').replaceChildren(...d.users.map(u => {
+        const tr = document.createElement('tr'); cell(tr, u.fullName); cell(tr, u.username); cell(tr, u.role);
+        const st = cell(tr, ''), b = document.createElement('span'); b.className = 'badge' + (u.active ? '' : ' off');
+        b.textContent = u.active ? 'Đang hoạt động' : 'Đã khóa'; st.append(b);
+        const ac = tr.insertCell();
+        const reset = document.createElement('button'); reset.textContent = 'Đặt lại mật khẩu';
+        reset.onclick = async () => { if (!confirm('Đặt lại mật khẩu cho ' + u.username + '?')) return;
+          const r = await api('/api/users/' + u.id + '/reset', 'POST'); if (r.ok) { show('Đã đặt lại mật khẩu cho ' + u.username + '.', false); showCred('Đã đặt lại mật khẩu', u.username, r.tempPassword); } else show(r.message, true); };
+        const tg = document.createElement('button'); tg.textContent = u.active ? 'Khóa' : 'Mở khóa';
+        tg.onclick = async () => { const r = await api('/api/users/' + u.id + '/toggle', 'POST'); r.ok ? load() : show(r.message, true); };
+        ac.append(reset, tg); return tr;
+      }));
+    }
+    $('add').onclick = async () => {
+      const name = $('fullName').value.trim(), user = $('username').value.trim();
+      const r = await api('/api/users', 'POST', { fullName: name, username: user, role: $('role').value });
+      if (r.ok) { show('Đã tạo tài khoản ' + user + ' (' + name + ').', false); showCred('Đã tạo tài khoản mới', user, r.tempPassword); $('fullName').value = $('username').value = ''; load(); }
+      else show(r.message, true);
+    };
+    $('logout').onclick = () => fetch('/api/logout', { method: 'POST' }).then(() => location.href = LOGIN);
+    api('/api/me').then(u => u.role === 'Admin' ? load() : location.href = '/dashboard.html');
+  </script>
+</body>
+</html>

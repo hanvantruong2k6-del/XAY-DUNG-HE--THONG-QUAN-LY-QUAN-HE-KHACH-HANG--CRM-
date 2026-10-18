@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard CRM</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="side">
+      <h2>CRM Logistics</h2>
+      <a class="on" href="/dashboard.html">Dashboard</a><a href="#">Khách hàng</a><a href="#">Pipeline cơ hội</a>
+      <a href="#">Ticket</a><a href="#">Báo cáo</a><a href="/users.html" id="adminLink" style="display:none">Phân quyền</a>
+    </nav>
+    <div class="main">
+      <div class="top"><div><h2 id="hello"></h2><small id="role"></small></div>
+        <div><button id="pwBtn">Đổi mật khẩu</button> <button id="logout">Đăng xuất</button></div></div>
+      <div class="panel" id="pwPanel" style="display:none">
+        <h3>Đổi mật khẩu</h3><div class="temp bad" id="mustMsg" style="display:none">Đây là lần đăng nhập đầu hoặc mật khẩu vừa được đặt lại. Vui lòng đặt mật khẩu mới.</div>
+        <div class="row" style="margin-top:12px"><input id="oldPw" type="password" placeholder="Mật khẩu hiện tại"><input id="newPw" type="password" placeholder="Mật khẩu mới (từ 8 ký tự)">
+          <button class="pri" id="savePw">Lưu</button></div><div id="pwMsg" class="temp" style="display:none"></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span>Khách hàng</span><b>1.248</b></div>
+        <div class="kpi"><span>Lead mới (tháng)</span><b>86</b></div>
+        <div class="kpi"><span>Cơ hội đang mở</span><b>37</b></div>
+        <div class="kpi"><span>Ticket chưa xử lý</span><b>12</b></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const $ = id => document.getElementById(id), LOGIN = '/SignUp_LogIn_Form.html';
+    fetch('/api/me').then(r => r.ok ? r.json() : Promise.reject()).then(u => {
+      $('hello').textContent = 'Xin chào, ' + u.fullName; $('role').textContent = 'Vai trò: ' + u.role;
+      if (u.role === 'Admin') $('adminLink').style.display = 'block';
+      if (u.mustChange) { $('pwPanel').style.display = 'block'; $('mustMsg').style.display = 'block'; }
+    }).catch(() => location.href = LOGIN);
+    $('pwBtn').onclick = () => $('pwPanel').style.display = $('pwPanel').style.display === 'none' ? 'block' : 'none';
+    $('savePw').onclick = async () => {
+      const r = await fetch('/api/password', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ oldPassword: $('oldPw').value, newPassword: $('newPw').value }) });
+      const d = await r.json(), m = $('pwMsg'); m.style.display = 'block';
+      m.className = 'temp' + (d.ok ? '' : ' bad'); m.textContent = d.ok ? 'Đã đổi mật khẩu thành công.' : d.message;
+      if (d.ok) { $('mustMsg').style.display = 'none'; $('oldPw').value = $('newPw').value = ''; }
+    };
+    $('logout').onclick = () => fetch('/api/logout', { method: 'POST' }).then(() => location.href = LOGIN);
+  </script>
+</body>
+</html>

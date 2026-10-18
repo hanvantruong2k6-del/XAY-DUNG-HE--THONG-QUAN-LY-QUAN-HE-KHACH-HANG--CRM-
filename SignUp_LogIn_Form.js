@@ -29,7 +29,6 @@ form.addEventListener('submit', async (e) => {
         });
         const data = await res.json();
         if (data.ok) {
-            sessionStorage.setItem('user', JSON.stringify(data));
             location.href = '/dashboard.html';
         } else {
             err.textContent = data.message;

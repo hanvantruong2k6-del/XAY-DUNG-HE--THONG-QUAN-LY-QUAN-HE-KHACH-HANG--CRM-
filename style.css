@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif}
+body{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(90deg,#e2e2e2,#c9d6ff)}
+.card{display:flex;width:850px;max-width:calc(100% - 40px);min-height:520px;background:#fff;border-radius:30px;box-shadow:0 0 30px rgba(0,0,0,.2);overflow:hidden}
+.brand{flex:1;background:#7494ec;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px;border-radius:0 150px 150px 0}
+.brand h1{font-size:34px}.brand p{margin-top:12px;font-size:14.5px}
+.form-side{flex:1;display:flex;align-items:center;padding:40px;text-align:center;color:#333}
+form{width:100%}form h1{font-size:32px;margin-bottom:10px}
+.input-box{position:relative;margin:24px 0}
+.input-box input{width:100%;padding:13px 50px 13px 20px;background:#eee;border-radius:8px;border:none;outline:none;font-size:16px}
+.input-box i{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:20px}
+.toggle-eye{cursor:pointer}
+.btn{width:100%;height:48px;background:#7494ec;border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:wait}
+.error{color:#d93025;font-size:14px;min-height:20px;margin-bottom:12px}
+.hint{font-size:12.5px;color:#888;margin-top:16px}
+@media(max-width:650px){.card{flex-direction:column}.brand{border-radius:0 0 80px 80px;padding:30px}}
+/* Dashboard */
+.layout{display:flex;width:100%;min-height:100vh;background:#f4f6fb;align-self:stretch}
+.side{width:230px;background:#7494ec;color:#fff;padding:28px 20px}
+.side h2{margin-bottom:24px}.side a{display:block;color:#fff;padding:10px 12px;border-radius:8px;margin-bottom:4px;text-decoration:none;font-size:15px}
+.side a.on,.side a:hover{background:rgba(255,255,255,.2)}
+.main{flex:1;padding:28px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.top button{padding:8px 16px;border:none;border-radius:8px;background:#7494ec;color:#fff;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.kpi{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.kpi span{font-size:13px;color:#888}.kpi b{display:block;font-size:28px;margin-top:6px}
+@media(max-width:650px){.layout{flex-direction:column}.side{width:100%}}
+/* Quản lý tài khoản */
+.panel{background:#fff;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow-x:auto}
+.panel h3{margin-bottom:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row input,.row select,.panel input{padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+.row button,.panel button.pri,.top button{padding:10px 16px;border:none;border-radius:8px;background:#7494ec;color:#fff;cursor:pointer;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eee}
+td button{padding:5px 10px;margin-right:6px;border:1px solid #7494ec;background:#fff;color:#7494ec;border-radius:6px;cursor:pointer}
+.badge{padding:3px 10px;border-radius:12px;font-size:12px;background:#e3f6e8;color:#1e8e3e}.badge.off{background:#fde7e7;color:#d93025}
+.temp{margin-top:12px;padding:12px;border-radius:8px;background:#fff6dd;font-size:14px}.temp.bad{background:#fde7e7;color:#d93025}
+.temp b{font-size:18px;letter-spacing:1px;user-select:all}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:50;padding:20px}
+.box{background:#fff;border-radius:16px;padding:28px;max-width:440px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.box h3{margin-bottom:10px}.box .small{font-size:13px;color:#666;margin:14px 0}
+.pwline{background:#fff6dd;border-radius:10px;padding:16px;margin-top:12px}
+.pwline b{font-size:26px;letter-spacing:2px;font-family:Consolas,monospace;user-select:all}
+.box button{padding:10px 18px;border:none;border-radius:8px;background:#7494ec;color:#fff;cursor:pointer;font-size:14px}
+.box button.ghost{background:#eee;color:#333}
